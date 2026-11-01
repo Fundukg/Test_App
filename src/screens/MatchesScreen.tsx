@@ -9,6 +9,8 @@ import {
   RefreshControl,
 } from "react-native";
 import { useMatchesData } from "../hooks/useMatchesData";
+import { FavoriteButton } from "../components/FavoriteButton";
+import { useFavorites } from "../hooks/useFavorites";
 import { UpdatedAgo } from "../components/UpdatedAgo";
 // Импортируйте FavoriteButton и UpdatedAgo из компонентов коллеги
 
@@ -17,6 +19,7 @@ type FilterType = "All" | "Upcoming" | "Finished" | "Live" | "Postponed";
 export const MatchesScreen = () => {
   const { matches, isLoading, isRefreshing, error, lastUpdated, refetch } =
     useMatchesData();
+  const { isFavorite, toggle } = useFavorites();
   const [filter, setFilter] = useState<FilterType>("All");
   const [isCancel, setIsCancel] = useState(false);
   const filteredMatches = useMemo(() => {
@@ -46,7 +49,6 @@ export const MatchesScreen = () => {
       </View>
     );
   }
-
 
   return (
     <View style={styles.container}>
@@ -142,6 +144,13 @@ export const MatchesScreen = () => {
                   {item.away.name}
                 </Text>
               </View>
+            </View>
+
+            <View style={styles.actions}>
+              <FavoriteButton
+                active={isFavorite(item.id)}
+                onPress={() => toggle(item.id)}
+              />
             </View>
           </View>
         )}
